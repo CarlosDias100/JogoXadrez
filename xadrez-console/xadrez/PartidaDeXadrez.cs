@@ -49,6 +49,7 @@ namespace xadrez
                 tab.colocarPeca(pecaCapturada, destino);
                 capturadas.Remove(pecaCapturada);
             }
+            tab.colocarPeca(p, origem);
         }
         public void realizaJogada(Posicao origem, Posicao destino)
         {
@@ -61,6 +62,10 @@ namespace xadrez
             if (estaEmXeque(adversaria(jogadorAtual)))
             {
                 xeque = true;
+            }
+            else
+            {
+                xeque = false;
             }
             if (testeXequemate(adversaria(jogadorAtual)))
             {
@@ -151,7 +156,7 @@ namespace xadrez
             Peca R = rei(cor);
             if (R == null)
             {
-                throw new TabuleiroException("n]ao tem rei da cor" + cor + "no tabuleiro!");
+                throw new TabuleiroException("nao tem rei da cor" + cor + "no tabuleiro!");
             }
             foreach (Peca x in pecasEmJogo(adversaria(cor)))
             {
@@ -167,29 +172,33 @@ namespace xadrez
 
         public bool testeXequemate(Cor cor)
         {
-            if (!estaEmXeque(cor)) { return false; }
+            if (!estaEmXeque(cor)) { 
+                return false; 
+            }
             foreach (Peca x in pecasEmJogo(cor))
             {
                 bool[,] mat = x.movimentosPossiveis();
                 for(int i= 0; i < tab.linhas; i++)
                 {
-                    for(int j= 0; j<tab.colunas;j++)
+                    for (int j = 0; j < tab.colunas; j++)
                     {
-                        if (mat[i,j]) {
+                        if (mat[i, j])
+                        {
                             Posicao origem = x.posicao;
                             Posicao destino = new Posicao(i, j);
-                             Peca pecaCapturada = executaMovimento(origem, destino);
+                            Peca pecaCapturada = executaMovimento(origem, destino);
                             bool testeXeque = estaEmXeque(cor);
                             desfazMovimento(origem, destino, pecaCapturada);
-                            if(!testeXeque) {
-                    return false;
-                }
+                            if (!testeXeque)
+                            {
+                                return false;
 
+                            }
                         }
                     }
                 }
             }
-return true;
+            return true;
         }
         public void colocarNovaPeca(char coluna, int linha, Peca peca)
         {
